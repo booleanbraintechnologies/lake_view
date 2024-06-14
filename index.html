@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lake-View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        h2, h3 {
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #salesReport {
+            display: none;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Drink Inventory</h2>
+        <div class="form-group">
+            <label for="category">Select Category</label>
+            <select id="category" onchange="populateDrinks()">
+                <option value="">Select</option>
+                <option value="Alcoholic">Alcoholic</option>
+                <option value="Non-Alcoholic">Non-Alcoholic</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="drinkType">Select Drink Type</label>
+            <select id="drinkType">
+                <option value="">Select Category First</option>
+            </select>
+        </div>
+        <div id="quantityFields">
+            <div class="form-group">
+                <label for="quantity1000">1000 ml</label>
+                <input type="number" id="quantity1000" placeholder="Enter quantity">
+            </div>
+            <div class="form-group">
+                <label for="quantity750">750 ml</label>
+                <input type="number" id="quantity750" placeholder="Enter quantity">
+            </div>
+            <div class="form-group">
+                <label for="quantity375">375 ml</label>
+                <input type="number" id="quantity375" placeholder="Enter quantity">
+            </div>
+            <div class="form-group">
+                <label for="quantity180">180 ml</label>
+                <input type="number" id="quantity180" placeholder="Enter quantity">
+            </div>
+            <div class="form-group">
+                <label for="quantity90">90 ml</label>
+                <input type="number" id="quantity90" placeholder="Enter quantity">
+            </div>
+        </div>
+        <button onclick="saveData()">Save</button>
+        <button onclick="generateSalesReport()">Generate Sales Report</button>
+
+        <div id="salesReport">
+            <h3>Sales Report</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Drink Type</th>
+                        <th>1000 ml</th>
+                        <th>750 ml</th>
+                        <th>375 ml</th>
+                        <th>180 ml</th>
+                        <th>90 ml</th>
+                    </tr>
+                </thead>
+                <tbody id="salesReportBody">
+                    <!-- Sales data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const salesData = [];
+
+        function populateDrinks() {
+            const drinkType = document.getElementById('drinkType');
+            drinkType.innerHTML = '';
+            const category = document.getElementById('category').value;
+
+            if (category === 'Alcoholic') {
+                const options = ['Whiskey', 'Vodka', 'Rum', 'Gin'];
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    drinkType.appendChild(opt);
+                });
+            } else if (category === 'Non-Alcoholic') {
+                const options = ['Juice', 'Soda', 'Water', 'Tea'];
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.innerHTML = option;
+                    drinkType.appendChild(opt);
+                });
+            } else {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.innerHTML = 'Select Category First';
+                drinkType.appendChild(opt);
+            }
+        }
+
+        function saveData() {
+            const category = document.getElementById('category').value;
+            const drinkType = document.getElementById('drinkType').value;
+            const quantity1000 = document.getElementById('quantity1000').value;
+            const quantity750 = document.getElementById('quantity750').value;
+            const quantity375 = document.getElementById('quantity375').value;
+            const quantity180 = document.getElementById('quantity180').value;
+            const quantity90 = document.getElementById('quantity90').value;
+
+            const data = {
+                category,
+                drinkType,
+                quantities: {
+                    "1000ml": quantity1000,
+                    "750ml": quantity750,
+                    "375ml": quantity375,
+                    "180ml": quantity180,
+                    "90ml": quantity90,
+                }
+            };
+
+            salesData.push(data);
+
+            console.log('Data saved:', data);
+            alert('Data saved successfully!');
+        }
+
+        function generateSalesReport() {
+            const salesReportBody = document.getElementById('salesReportBody');
+            salesReportBody.innerHTML = '';
+
+            salesData.forEach(data => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.category}</td>
+                    <td>${data.drinkType}</td>
+                    <td>${data.quantities["1000ml"]}</td>
+                    <td>${data.quantities["750ml"]}</td>
+                    <td>${data.quantities["375ml"]}</td>
+                    <td>${data.quantities["180ml"]}</td>
+                    <td>${data.quantities["90ml"]}</td>
+                `;
+                salesReportBody.appendChild(row);
+            });
+
+            document.getElementById('salesReport').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
